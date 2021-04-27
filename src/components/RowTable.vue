@@ -1,6 +1,6 @@
 <template>
     <div class="flex text-xs items-center rounded-2xl w-full mt-4 bg-gray-100 row">
-        <div :class="[item.value === 'body' ? 'w-3/6' : 'w-1/6','pl-2']" v-for="item in groupTitle" :key="item.id">{{itemContent[item.value]}}</div>
+        <div :class="[item.value === 'body' ? 'w-8/12' : 'w-1/12',item.value === 'title' ? 'w-2/12':'','pl-2']" v-for="item in groupTitle" :key="item.id">{{itemContent[item.value]}}</div>
     </div>
 </template>
 
