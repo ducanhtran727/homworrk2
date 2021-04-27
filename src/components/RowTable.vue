@@ -1,27 +1,42 @@
 <template>
-    <div class="flex text-xs items-center rounded-2xl w-full mt-4 bg-gray-100 row">
-        <div :class="[item.value === 'body' ? 'w-8/12' : 'w-1/12',item.value === 'title' ? 'w-2/12':'','pl-2']" v-for="item in groupTitle" :key="item.id">{{itemContent[item.value]}}</div>
+  <div
+    :class="[itemContent.id % 2 == 0 ? 'bg-blue-100':'','flex text-xs items-center rounded-2xl w-full mt-4 bg-gray-100 row']"
+  >
+    <div
+      :class="[
+        item.value === 'body' ? 'w-8/12' : 'w-1/12',
+        item.value === 'title' ? 'w-2/12' : '',
+        'pl-4 flex h-full items-center',
+        item.value === 'id' ? 'justify-center' : '',
+        item.value === 'userId' ? 'justify-center' : '',
+      ]"
+      v-for="item in groupTitle"
+      :key="item.id"
+    >
+      {{ itemContent[item.value] }}
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props:{
-        itemContent:{
-            type:Object,
-            required:true,
-        },
-        groupTitle:{
-            type:Array,
-            required:true
-        }
-    }
-}
+  props: {
+    itemContent: {
+      type: Object,
+      required: true,
+    },
+    groupTitle: {
+      type: Array,
+      required: true,
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.row{
-    height:45px;
-    width: 80vw;
+.row {
+  height: 50px;
+  width: 80vw;
 }
+
 </style>
