@@ -14,9 +14,11 @@
         :prevPage="prevPage"
         :nextPage="nextPage"
       />
+      <router-view />
+      <router-link to="/form">Form</router-link>
     </div>
   </div>
-</template>
+</template>                   
 <script>
 import HeaderTable from "./components/HeaderTable";
 import RowTable from "./components/RowTable";
@@ -106,7 +108,7 @@ export default {
     "pagination.numberRow": function () {
       this.pagination.totalPage =
         this.getContent.length / this.pagination.numberRow;
-      this.pagination.currentPage = 0
+      this.pagination.currentPage = 0;
     },
   },
   computed: {

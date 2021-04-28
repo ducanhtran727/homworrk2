@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="[itemContent.id % 2 == 0 ? 'bg-blue-100':'','flex text-xs items-center rounded-2xl w-full mt-4 bg-gray-100 row']"
+    :class="[
+      itemContent.id % 2 == 0 ? 'bg-blue-100' : '',
+      'flex text-xs items-center rounded-2xl w-full mt-4 bg-gray-100 row',
+    ]"
   >
     <div
       :class="[
@@ -13,7 +16,7 @@
       v-for="item in groupTitle"
       :key="item.id"
     >
-      {{ itemContent[item.value] }}
+      {{ dataContent[item.value] }}
     </div>
   </div>
 </template>
@@ -30,6 +33,28 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      dataContent: "",
+    };
+  },
+  methods: {
+    getdata() {
+      let body = this.itemContent["body"].split("").slice(0, 160).join("");
+      let title = this.itemContent["title"].split("").slice(0, 40).join("");
+      let id = this.itemContent["id"]
+      let userId = this.itemContent["userId"]
+      this.dataContent = {
+        id,userId,
+        body,
+        title,
+      };
+      return this.dataContent;
+    },
+  },
+  created() {
+    this.getdata();
+  },
 };
 </script>
 
@@ -38,5 +63,4 @@ export default {
   height: 50px;
   width: 80vw;
 }
-
 </style>
