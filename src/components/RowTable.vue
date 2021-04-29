@@ -6,17 +6,17 @@
     ]"
   >
     <div
-      :class="[
-        item.value === 'body' ? 'w-8/12' : 'w-1/12',
-        item.value === 'title' ? 'w-2/12' : '',
-        'pl-4 flex h-full items-center',
-        item.value === 'id' ? 'justify-center' : '',
-        item.value === 'userId' ? 'justify-center' : '',
-      ]"
+      :class="[item.class, 'pl-4 flex h-full items-center']"
       v-for="item in groupTitle"
       :key="item.id"
     >
       {{ dataContent[item.value] }}
+    </div>
+    <div class="w-1/12 flex items-center justify-around">
+      <button @click="getEditItem" class="btn bg-white rounded-xl">Edit</button>
+      <button @click="deteteItem" class="btn bg-white rounded-xl ">
+        Delete
+      </button>
     </div>
   </div>
 </template>
@@ -40,16 +40,24 @@ export default {
   },
   methods: {
     getdata() {
-      let body = this.itemContent["body"].split("").slice(0, 160).join("");
+      let body = this.itemContent["body"].split("").slice(0, 140).join("");
       let title = this.itemContent["title"].split("").slice(0, 40).join("");
-      let id = this.itemContent["id"]
-      let userId = this.itemContent["userId"]
+      let id = this.itemContent["id"];
+      let userId = this.itemContent["userId"];
       this.dataContent = {
-        id,userId,
+        id,
+        userId,
         body,
         title,
       };
       return this.dataContent;
+    },
+    deteteItem() {
+      this.$emit("deleteItem", this.itemContent.id);
+    },
+    getEditItem() {
+      this.$emit("getEditItem", this.itemContent);
+      this.$router.push('/form')
     },
   },
   created() {
@@ -62,5 +70,11 @@ export default {
 .row {
   height: 50px;
   width: 80vw;
+}
+.btn {
+  width: 50px;
+  height: 30px;
+  border:none;
+  outline:none;
 }
 </style>

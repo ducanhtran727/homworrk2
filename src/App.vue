@@ -8,6 +8,8 @@
         :key="item.id"
         :itemContent="item"
         :groupTitle="groupTitle"
+        @deleteItem="deleteItem"
+        @getEditItem="getEditItem"
       />
       <BotTable
         :pagination="pagination"
@@ -18,7 +20,7 @@
       <router-link to="/form">Form</router-link>
     </div>
   </div>
-</template>                   
+</template>
 <script>
 import HeaderTable from "./components/HeaderTable";
 import RowTable from "./components/RowTable";
@@ -55,27 +57,31 @@ export default {
           id: 1,
           text: "Title",
           value: "title",
+          class:"w-2/12"
         },
         {
           id: 2,
           text: "Body",
+          class:"w-7/12",
           value: "body",
         },
         {
           id: 3,
           text: "Id",
           value: "id",
+          class:"w-1/12 justify-center"
         },
         {
           id: 4,
           text: "User Id",
           value: "userId",
+          class:"w-1/12 justify-center"
         },
       ],
     };
   },
   methods: {
-    ...mapActions(["actionGetDataContent"]),
+    ...mapActions(["actionGetDataContent","actionGetEditDataContent","actionDeleteDataContent"]),
     prevPage() {
       this.pagination.currentPage--;
     },
@@ -94,6 +100,12 @@ export default {
       } else {
         this.pagination.isNext = false;
       }
+    },
+    getEditItem(item) {
+      this.actionGetEditDataContent(item)
+    },
+    deleteItem(id) {
+      this.actionDeleteDataContent(id)
     },
   },
   created() {
