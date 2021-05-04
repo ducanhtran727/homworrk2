@@ -2,6 +2,16 @@
   <div id="app" class="app">
     <div v-if="getLoading">loading ...</div>
     <div v-else class="mx-auto flex-col items-center table">
+      <div class="searchBox">
+        <input type="text" v-model="searchValue" placeholder="search ..." />
+        <router-link to="/form"
+          ><button
+            class="outline-none bg-blue-300 w-32 h-8 text-sm rounded-xl"
+          >
+            Add New Item
+          </button></router-link
+        >
+      </div>
       <HeaderTable :groupTitle="groupTitle" />
       <RowTable
         v-for="item in contentPage"
@@ -17,7 +27,6 @@
         :nextPage="nextPage"
       />
       <router-view />
-      <router-link to="/form">Form</router-link>
     </div>
   </div>
 </template>
@@ -34,6 +43,7 @@ export default {
   },
   data() {
     return {
+      searchValue: "",
       pagination: {
         currentPage: 0,
         totalPage: 10,
@@ -57,31 +67,35 @@ export default {
           id: 1,
           text: "Title",
           value: "title",
-          class:"w-2/12"
+          class: "w-2/12",
         },
         {
           id: 2,
           text: "Body",
-          class:"w-7/12",
+          class: "w-7/12",
           value: "body",
         },
         {
           id: 3,
           text: "Id",
           value: "id",
-          class:"w-1/12 justify-center"
+          class: "w-1/12 justify-center",
         },
         {
           id: 4,
           text: "User Id",
           value: "userId",
-          class:"w-1/12 justify-center"
+          class: "w-1/12 justify-center",
         },
       ],
     };
   },
   methods: {
-    ...mapActions(["actionGetDataContent","actionGetEditDataContent","actionDeleteDataContent"]),
+    ...mapActions([
+      "actionGetDataContent",
+      "actionGetEditDataContent",
+      "actionDeleteDataContent",
+    ]),
     prevPage() {
       this.pagination.currentPage--;
     },
@@ -102,10 +116,10 @@ export default {
       }
     },
     getEditItem(item) {
-      this.actionGetEditDataContent(item)
+      this.actionGetEditDataContent(item);
     },
     deleteItem(id) {
-      this.actionDeleteDataContent(id)
+      this.actionDeleteDataContent(id);
     },
   },
   created() {
@@ -122,13 +136,34 @@ export default {
         this.getContent.length / this.pagination.numberRow;
       this.pagination.currentPage = 0;
     },
+    searchValue: function() {
+      if (this.searchValue === "") {
+        this.pagination.totalFilter = null;
+        this.pagination.currentPage = 0;
+      } else {
+        this.pagination.totalFilter = this.contentFilter.length;
+        this.pagination.currentPage = 0;
+      }
+      this.conditionChange();
+    },
   },
   computed: {
+    contentFilter() {
+      return this.getContent.filter((item) =>
+        this.searchValue
+          ? Object.values(item)
+              .join("")
+              .toLowerCase()
+              .trim()
+              .includes(this.searchValue)
+          : item
+      );
+    },
     contentPage() {
       const startIndex =
         this.pagination.currentPage * this.pagination.numberRow;
       let endIndex = startIndex + this.pagination.numberRow;
-      return this.getContent.slice(startIndex, endIndex);
+      return this.contentFilter.slice(startIndex, endIndex);
     },
     getLoading() {
       return this.$store.state.loading;
@@ -147,5 +182,15 @@ export default {
 }
 .table {
   width: 50vw;
+}
+.searchBox {
+  width: 100%;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+.searchBox input {
+  border: 2px solid lightblue;
+  padding-left: 5px;
 }
 </style>

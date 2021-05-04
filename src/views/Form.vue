@@ -6,10 +6,15 @@
         v-slot="{ handleSubmit }"
         class="w-full flex justify-center"
       >
-        <form @submit.prevent="handleSubmit(onSubmit)" class="w-3/4">
+        <form
+          @submit.prevent="
+            handleSubmit(!getEditContent ? onSubmitAdded : onSubmitEdited)
+          "
+          class="w-3/4"
+        >
           <ValidationProvider
             v-slot="{ errors }"
-            v-for="item in updateListField"
+            v-for="item in !getEditContent ? listField : updateListField"
             :key="item.id"
             :rules="item.rules"
             :name="item.name"
@@ -42,9 +47,9 @@
             </button>
           </div>
         </form>
-        {{updateListField}}
-        {{getEditContent}}
-        {{updateEditValue}}
+        <!-- {{updateListField}}
+        {{listKey}}
+        {{updateEditValue}} -->
       </ValidationObserver>
     </div>
   </div>
@@ -70,43 +75,61 @@ export default {
           value: "",
           id: 2,
         },
-        {
-          name: "id",
-          type: "text",
-          rules: "required|numeric",
-          value: "",
-          id: 3,
-        },
+        // {
+        //   name: "id",
+        //   type: "text",
+        //   rules: "required|numeric",
+        //   value: "",
+        //   id: 3,
+        // },
+        // {
+        //   name: "userId",
+        //   type: "text",
+        //   rules: "required|numeric",
+        //   value: "",
+        //   id: 4,
+        // },
       ],
       listKey: {
-          title:'',
-          id:'',
-          body:''
-      }
+        title: "",
+        body: "",
+      },
     };
   },
   computed: {
     ...mapGetters(["getEditContent"]),
     updateListField() {
-      return this.listField.map(
-        (item) => ({...item,value: this.getEditContent[item.name]})
-      );
+      return this.listField.map((item) => ({
+        ...item,
+        value: this.getEditContent[item.name],
+      }));
     },
-    updateEditValue(){
-        return   this.updateListField.map(item => item.value)
-    }
   },
-  watch:{
-    updateListField: {
-        deep:true
-    }
-  },
+  // watch:{
+  //   updateListField: function() {
+
+  //   }
+  // },
   methods: {
     closePost() {
       this.$router.push("/");
+      this.$store.dispatch("actionGetEditDataContent", null);
     },
-    onSubmit() {
-      this.$store.dispatch("actionUpdateItem")
+    onSubmitEdited() {
+      this.updateListField.forEach(
+        (item) => (this.listKey[item.name] = item.value)
+      );
+      this.$store.dispatch("actionUpdateItem", this.listKey);
+      alert("Edit Item Success");
+      this.closePost()
+    },
+    onSubmitAdded() {
+       this.listField.forEach(
+        (item) => (this.listKey[item.name] = item.value)
+      );
+      this.$store.dispatch("actionAddItem",this.listKey);
+      alert("Add Item Success");
+      this.closePost()
     },
   },
 };
@@ -118,8 +141,8 @@ export default {
   top: 20%;
   left: 28%;
   background-color: #dfe6e9;
-  width: 40vw;
-  height: 45vh;
+  width: 45vw;
+  height: 55vh;
   z-index: 9999;
 }
 .overlay {

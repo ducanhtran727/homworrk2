@@ -33,8 +33,15 @@ export const store = new Vuex.Store({
     getEditItem(state, payload) {
       state.editPage = payload;
     },
-    updateItem(state ,payload ){
-      state.editPage = payload;
+    updateItem(state ,payload){
+      // state.sendValue = payload;
+      const indexResult = state.valuePage.findIndex(
+        (item) => item.id === payload.id
+      )
+      state.valuePage[indexResult] = payload
+    },
+    addItem(state, payload){
+      state.valuePage.unshift(payload)
     }
   },
   actions: {
@@ -52,9 +59,13 @@ export const store = new Vuex.Store({
     actionGetEditDataContent: ({ commit }, payload) => {
       commit("getEditItem", payload);
     },
-    actionUpdateItem : async ({ commit },payload) => {
-      await axios.put(`https://jsonplaceholder.typicode.com/posts/${payload.id}`)
+    actionUpdateItem : async ({ commit , state},payload) => {
+      await axios.put(`https://jsonplaceholder.typicode.com/posts/${state.editPage.id}`,payload)
       commit("updateItem",payload)
+    },
+    actionAddItem : async ({ commit }, payload) => {
+      await axios.post("https://jsonplaceholder.typicode.com/posts",payload)
+      commit("addItem",payload)
     }
   },
 });

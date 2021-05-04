@@ -13,7 +13,10 @@
       <button :class="[pagination.isNext ? 'btn-disabled' : '','btn']"  @click="nextPage" :disabled="pagination.isNext" >Next</button>
     </div>
     <div>
-      <div>
+      <div v-if="pagination.totalFilter">
+        Total Filtered : {{pagination.totalFilter}}
+      </div>
+      <div v-else>
         Page current : {{ pagination.currentPage + 1 }} /
         {{ pagination.totalPage }}
       </div>
